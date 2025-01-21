@@ -30,24 +30,7 @@ def error401():
 
 
 
-# @app.route("/dashboard/")
-# def dashboard():
-#     content = "Dashboard"
-#     return render_template("dashboard.html", content=content)
 
-
-# def get_token():
-#     global token_cache
-#     if not token_cache:
-#         # Token belum ada, login untuk dapetin token baru
-#         login_url = "http://172.24.52.4:7171/api/login"
-#         login_data = {"username": "2013114380", "password": "2013114380"}
-#         response = requests.post(login_url, json=login_data)
-#         if response.status_code == 200:
-#             token_cache = response.json().get("token")  # Simpen token
-#         else:
-#             return None  # Token gagal diambil, return None
-#     return token_cache
 
 token_cache = {"access_token": None, "refresh_token": None}
 
