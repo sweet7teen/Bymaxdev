@@ -1,0 +1,766 @@
+<!-- prettier-ignore -->
+{% extends "ui/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- IRIS -->
+<h5 class="mb-2">IRIS</h5>
+<div class="row">
+  <div class="col-md-3 col-sm-6 col-12">
+    <div class="small-box shadow bg-gradient-info">
+      <div class="inner">
+        <h3>{{ toko_aktif }}</h3>
+        <p>Total Toko Aktif</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-store-alt"></i>
+      </div>
+      <a href="#" class="small-box-footer">&nbsp;</a>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 col-12">
+    <div class="small-box shadow bg-danger">
+      <div class="inner">
+        <h3>{{ toko_nok }}</h3>
+        <p>Total Toko Tutup</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-store-alt-slash"></i>
+      </div>
+      <a
+        href="#"
+        class="small-box-footer"
+        data-toggle="modal"
+        data-target="#iris-toko-nok"
+      >
+        <i class="fas fa-info-circle"></i>
+      </a>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 col-12">
+    <div class="small-box shadow bg-success">
+      <div class="inner">
+        <h3>{{ toko_sudah }}</h3>
+        <p>Total Toko Proses</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <a href="#" class="small-box-footer">&nbsp;</a>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 col-12">
+    <div class="small-box shadow bg-secondary">
+      <div class="inner">
+        <h3>{{ toko_belum }}</h3>
+        <p>Total Toko Belum Proses</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-hourglass-half"></i>
+      </div>
+      <a
+        href="#"
+        class="small-box-footer"
+        data-toggle="modal"
+        data-target="#iris-toko-belum"
+      >
+        <i class="fas fa-info-circle"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL IRIS -->
+<div class="modal fade" id="iris-toko-nok">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List Toko Tutup</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="iris-nok" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>NAMA TOKO</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nok in detil_nok %}
+            <tr>
+              <td>{{ nok.kdcab }}</td>
+              <td>{{ nok.toko }} {{ nok.kdtk }}</td>
+              <td>{{ nok.namatoko }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="iris-toko-belum">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List Toko Belum Proses</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="iris-belum" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>NAMA TOKO</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for belum in detil_belum %}
+            <tr>
+              <td>{{ belum.kdcab }}</td>
+              <td>{{ belum.kdtk }}</td>
+              <td>{{ belum.nama }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- END IRIS -->
+
+<!-- TAMPUNG -->
+<h5 class="mb-2">TAMPUNG</h5>
+<div class="row">
+  <div class="col-md-2 col-sm-6 col-12">
+    <div class="small-box shadow bg-gradient-info">
+      <div class="inner">
+        <h3>{{ tampung_toko }}</h3>
+        <p>Total Toko</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-store-alt"></i>
+      </div>
+      <a href="#" class="small-box-footer">&nbsp;</a>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-6 col-12">
+    <div class="small-box shadow bg-teal">
+      <div class="inner">
+        <h3>{{ tampung_sudah }}</h3>
+        <p>Total Sudah Masuk</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <a href="#" class="small-box-footer">&nbsp;</a>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-6 col-12">
+    <div class="small-box shadow bg-danger">
+      <div class="inner">
+        <h3>{{ tampung_belum }}</h3>
+        <p>Total Belum Masuk</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-exclamation"></i>
+      </div>
+      <a
+        href="#"
+        class="small-box-footer"
+        data-toggle="modal"
+        data-target="#tampung-toko-belum"
+      >
+        <i class="fas fa-info-circle"></i>
+      </a>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-6 col-12">
+    <div class="small-box shadow bg-olive">
+      <div class="inner">
+        <h3>{{ tampung_closing }}</h3>
+        <p>Total Sudah Closing</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-check-double"></i>
+      </div>
+      <a href="#" class="small-box-footer">&nbsp;</a>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-6 col-12">
+    <div class="small-box shadow bg-maroon">
+      <div class="inner">
+        <h3>{{ tampung_blm_closing }}</h3>
+        <p>Total belum Closing</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-flag"></i>
+      </div>
+      <a href="#" class="small-box-footer">&nbsp;</a>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-6 col-12">
+    <div class="small-box shadow bg-secondary">
+      <div class="inner">
+        <h3>{{ tampung_nok }}</h3>
+        <p>Total Listener Nok</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-times"></i>
+      </div>
+      <a
+        href="#"
+        class="small-box-footer"
+        data-toggle="modal"
+        data-target="#tampung-toko-nok"
+      >
+        <i class="fas fa-info-circle"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMPUNG -->
+<div class="modal fade" id="tampung-toko-belum">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List Toko Tutup</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="tampung-belum" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>NAMA TOKO</th>
+              <th>FILE HR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for belum in detil_tampung_belum %}
+            <tr>
+              <td>{{ belum.kdcab }}</td>
+              <td>{{ belum.toko }}</td>
+              <td>{{ belum.nama }}</td>
+              <td>{{ belum.dir_file_hr }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="tampung-toko-nok">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List Toko Belum Proses</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="tampung-nok" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>NAMA TOKO</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nok in detil_tampung_nok %}
+            <tr>
+              <td>{{ nok.kdcab }}</td>
+              <td>{{ nok.toko }}</td>
+              <td>{{ nok.nama }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- END TAMPUNG -->
+
+<!-- LOCAL -->
+<h5 class="mb-2">LOCAL</h5>
+<div class="row">
+  <div class="col-md-4">
+    <div class="card card-widget widget-user">
+      <!-- Add the bg color to the header using any of the bg-* classes -->
+      <div class="widget-user-header bg-gradient-info">
+        <h3 class="widget-user-username">G050</h3>
+        <h5 class="widget-user-desc">SAMARINDA</h5>
+      </div>
+      <div class="widget-user-image">
+        <img
+          class="img-circle elevation-2"
+          src="{{ url_for('static', filename='/dist/img/github.png') }}"
+          alt="User Avatar"
+        />
+      </div>
+      <div class="card-footer">
+        <div class="row">
+          <div class="col-sm-4 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{ smd }}</h5>
+              <span class="description-text">Toko Aktif</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-4 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{ smd_in }}</h5>
+              <span class="description-text">HR Masuk</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-4">
+            <div class="description-block">
+              <h5 class="description-header">
+                {{ smd_kurang }}
+                <a href="#" data-toggle="modal" data-target="#hr-g050">
+                  <i class="fas fa-info-circle"></i>
+                </a>
+              </h5>
+              <span class="description-text">HR Kurang</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-widget widget-user">
+      <!-- Add the bg color to the header using any of the bg-* classes -->
+      <div class="widget-user-header bg-gradient-success">
+        <h3 class="widget-user-username">G241</h3>
+        <h5 class="widget-user-desc">BULUNGAN</h5>
+      </div>
+      <div class="widget-user-image">
+        <img
+          class="img-circle elevation-2"
+          src="{{ url_for('static', filename='/dist/img/github.png') }}"
+          alt="User Avatar"
+        />
+      </div>
+      <div class="card-footer">
+        <div class="row">
+          <div class="col-sm-4 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{ bul }}</h5>
+              <span class="description-text">Toko Aktif</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-4 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{ bul_in }}</h5>
+              <span class="description-text">HR Masuk</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-4">
+            <div class="description-block">
+              <h5 class="description-header">
+                {{ bul_kurang }}
+                <a href="#" data-toggle="modal" data-target="#hr-g241">
+                  <i class="fas fa-info-circle"></i>
+                </a>
+              </h5>
+              <span class="description-text">HR Kurang</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-widget widget-user">
+      <!-- Add the bg color to the header using any of the bg-* classes -->
+      <div class="widget-user-header bg-gradient-danger">
+        <h3 class="widget-user-username">G242</h3>
+        <h5 class="widget-user-desc">TARAKAN</h5>
+      </div>
+      <div class="widget-user-image">
+        <img
+          class="img-circle elevation-2"
+          src="{{ url_for('static', filename='/dist/img/github.png') }}"
+          alt="User Avatar"
+        />
+      </div>
+      <div class="card-footer">
+        <div class="row">
+          <div class="col-sm-4 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{ tar }}</h5>
+              <span class="description-text">Toko Aktif</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-4 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{ tar_in }}</h5>
+              <span class="description-text">HR Masuk</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-4">
+            <div class="description-block">
+              <h5 class="description-header">
+                {{ tar_kurang }}
+                <a href="#" data-toggle="modal" data-target="#hr-g242">
+                  <i class="fas fa-info-circle"></i>
+                </a>
+              </h5>
+              <span class="description-text">HR Kurang</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+    </div>
+  </div>
+  
+</div>
+<!-- END LOCAL -->
+
+<!-- MODAL lOCAL -->
+<div class="modal fade" id="hr-g050">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List HR Kurang</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="hr-kurang-g050" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>PERIODE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in smd_kurang_details %}
+            <tr>
+              <td>{{ item.kdcab }}</td>
+              <td>{{ item.kdtk }}</td>
+              <td>{{ periodehr }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="hr-g241">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List HR Kurang</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="hr-kurang-g241" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>PERIODE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in bul_kurang_details %}
+            <tr>
+              <td>{{ item.kdcab }}</td>
+              <td>{{ item.kdtk }}</td>
+              <td>{{ periodehr }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="hr-g242">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List HR Kurang</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="hr-kurang-g242" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>PERIODE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in tar_kurang_details %}
+            <tr>
+              <td>{{ item.kdcab }}</td>
+              <td>{{ item.kdtk }}</td>
+              <td>{{ periodehr }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="hr-g028">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List HR Kurang</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="hr-kurang-g028" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>FILE HR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>G050</td>
+              <td>TZVK</td>
+              <td>HR240929.ZVK</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="hr-g165">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List HR Kurang</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="hr-kurang-g165" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>FILE HR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>G050</td>
+              <td>TZVK</td>
+              <td>HR240929.ZVK</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="hr-g143">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">List HR Kurang</h4>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="hr-kurang-g143" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>CABANG</th>
+              <th>KODE TOKO</th>
+              <th>FILE HR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>G050</td>
+              <td>TZVK</td>
+              <td>HR240929.ZVK</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+{% endblock %}
