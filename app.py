@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, g
 import requests
 import os
-import jwt
+import jwt as pyjwt
 import time
 from datetime import datetime, timedelta
 import logging
@@ -63,10 +63,8 @@ def inject_user():
 
 @app.route("/")
 def index():
-    content = "Index"    
+    content = "Homepage"    
     return render_template("index.html", content=content)
-    
-    
 
 @app.route("/homepage/")
 def homepage():
@@ -77,10 +75,6 @@ def homepage():
 def error401():
     content = "Error 401"
     return render_template("401.html", content=content)
-
-
-
-
 
 token_cache = {"access_token": None, "refresh_token": None}
 
@@ -100,10 +94,10 @@ def get_token():
 
     def is_token_expired(token, margin=300):  # Tambah margin 5 menit
         try:
-            payload = jwt.decode(token, options={"verify_signature": False})
+            payload = pyjwt.decode(token, options={"verify_signature": False})
             exp = payload.get("exp", 0)  # Ambil expiration time
             return time.time() > (exp - margin)  # True kalau expired
-        except jwt.DecodeError:
+        except pyjwt.DecodeError:
             return True  # Kalau token gak valid, anggap expired
 
     if not token_cache["access_token"] or is_token_expired(token_cache["access_token"]):
