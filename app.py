@@ -1,22 +1,72 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort, g
 import requests
 import os
 import jwt
 import time
 from datetime import datetime, timedelta
 import logging
+import mysql.connector
+from functools import wraps
 
 logging.basicConfig(filename='debug.log', level=logging.INFO)
 
 app = Flask(__name__)
 
+# Konfigurasi koneksi MySQL
+DB_CONFIG = {
+    'host': '192.168.26.78',  # IP database (localhost kalau di Laragon)
+    'user': 'root',       # Username MySQL
+    'password': '',       # Password MySQL (default kosong di Laragon)
+    'database': 'lokal'
+}
+
+def get_user_by_ip(ip):
+    """Ambil username berdasarkan IP dari database."""
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT username FROM baymax_users WHERE ip = %s', (ip,))
+        row = cursor.fetchone()
+        conn.close()
+        return row['username'] if row else None
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+@app.before_request
+def load_user():
+    """Load user before processing request."""
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    g.username = get_user_by_ip(client_ip)  # Set username ke Flask global object
+
+@app.context_processor
+def inject_user():
+    """Inject user into all templates."""
+    return {"username": g.get("username", None)}  # Tambahkan username ke template context
+
+def require_registered_ip(func):
+    """Decorator untuk membatasi akses hanya untuk IP yang terdaftar."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not g.get("username"):  # Periksa apakah IP terdaftar
+            abort(403)  # Forbidden jika tidak terdaftar
+        return func(*args, **kwargs)
+    return wrapper
+
+
 token_cache = None  # Variabel global untuk menyimpan token
 
+@app.context_processor
+def inject_user():
+    """Inject username ke semua template."""
+    return {"username": g.get("username", None)}
 
 @app.route("/")
 def index():
-    content = "Index"
+    content = "Index"    
     return render_template("index.html", content=content)
+    
+    
 
 @app.route("/homepage/")
 def homepage():
