@@ -28072,3 +28072,5 @@ INFO:werkzeug: * Detected change in 'D:\\WEBSERVER\\python\\Bymaxdev\\app.py', r
 INFO:werkzeug: * Restarting with stat
 WARNING:werkzeug: * Debugger is active!
 INFO:werkzeug: * Debugger PIN: 112-071-397
+INFO:werkzeug: * Detected change in 'D:\\WEBSERVER\\python\\Bymaxdev\\app.py', reloading
+INFO:werkzeug: * Restarting with stat

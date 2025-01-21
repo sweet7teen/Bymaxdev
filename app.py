@@ -8,7 +8,7 @@ import logging
 import mysql.connector
 from functools import wraps
 
-logging.basicConfig(filename='debug.log', level=logging.INFO)
+# logging.basicConfig(filename='debug.log', level=logging.INFO)
 
 app = Flask(__name__)
 
