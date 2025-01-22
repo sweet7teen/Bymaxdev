@@ -7,37 +7,40 @@
 
 <div class="card">
   <div class="card-header bg-primary">
-    <h3 class="card-title">Monitoring Harian IRIS & Tampung</h3>
+    <h3 class="card-title">Monitoring Harian WRC</h3>
   </div>
-  <form action="/hriris/" method="POST">
   <div class="card-body">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Cabang :</label>
+    <form action="/hriris/" method="POST">
+      <div class="row">
+        <div class="col-md-1">
+          <label for="kdcab">Cabang</label>
+        </div>
+        <div class="col-md-4">
           <select class="select2" multiple="multiple" data-placeholder="Pilih Cabang" style="width: 100%;" name="kdcab" id="kdcab" required>
-            <option value="16,58,60">SELECT ALL</option>
+            <option value="16,58,60,19">SELECT ALL</option>
             <option value="16">G050 - SAMARINDA</option>
             <option value="58">G241 - BULUNGAN</option>
             <option value="60">G242 - TARAKAN</option>
+            <option value="19">G092 - BANJARMASIN</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Tanggal :</label>
+        <div class="col-md-1">
+          <label>Tanggal</label>
+        </div>
+        <div class="col-md-4">
           <div class="input-group date" id="reservationdate" data-target-input="nearest">
-              <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" name="tanggal" required/>
-              <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-              </div>
+            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" name="tanggal" required >
+            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="col-md-2">
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-      </div>      
-    </div>
+      </div>
+    </form>
   </div>
-  </form>
 </div>
 
 <!-- result -->
@@ -130,10 +133,9 @@
             <td>{{ rw.nama_cabang }}</td>
             <td>{{ rw.total_toko }}</td>
             <td><span class="badge bg-success">{{ rw.sudah }}</span></td>
-            <td><span class="badge {% if rw.belum == '0' %}bg-success{% else %}bg-danger{% endif %}">{{ rw.belum }}</span></td>          
+            <td><span class="badge {% if rw.belum == 0 %}bg-success{% else %}bg-danger{% endif %}">{{ rw.belum }}</span></td>          
         </tr>
         {% endfor %}
-
       </tbody>
     </table>
   </div>
