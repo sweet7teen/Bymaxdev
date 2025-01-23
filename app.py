@@ -222,14 +222,6 @@ def dashboard():
             ]
 
 
-            # # Debug: Print detail toko yang belum masuk
-            # if not smd_kurang_details:
-            #     print("Semua toko aktif sudah masuk di lokal!")
-            # else:
-            #     print("Detail toko yang belum masuk:")
-            #     for toko in smd_kurang_details:
-            #         print(f"KDCBG: {toko['kdcab']}, Toko: {toko['kdtk']}")
-
             # Ambil total toko dari setiap kdcab
             # TOKO AKTIF
             total_toko_aktif = sum(int(item.get("total_toko", 0)) for item in rekap_data)
@@ -362,13 +354,6 @@ def dashboard():
     except Exception as e:
         return {"error": str(e)}, 500
 
-# @app.route("/hriris/")
-# def hriris():
-#     content = "HR IRIS & Tampung"
-    
-
-#     return render_template("hriris.html", content=content)
-
 
 @app.route("/hriris/", methods=["GET", "POST"])
 def hriris():
@@ -383,36 +368,41 @@ def hriris():
         kdcab = request.form.getlist("kdcab")
         tanggal = request.form["tanggal"]
 
-        # Ambil token
-        token = get_token()
-        if not token:
-            return redirect(url_for("error401"))  # Redirect kalau token gagal
+        def api_request_with_token_retry(url, payload):
+            """Melakukan request API dengan retry jika token expired."""
+            global token_cache
+            headers = {"Authorization": f"Bearer {get_token()}", "Content-Type": "application/json"}
+            try:
+                response = requests.post(url, json=payload, headers=headers)
+                if response.status_code == 401:  # Token expired atau invalid
+                    print("Token expired, refreshing token...")
+                    with token_lock:  # Pastikan hanya satu thread yang merefresh token
+                        refresh_token()  # Refresh token
+                    headers["Authorization"] = f"Bearer {get_token()}"  # Perbarui header dengan token baru
+                    response = requests.post(url, json=payload, headers=headers)  # Coba lagi dengan token baru
+                response.raise_for_status()  # Raise error kalau status code selain 2xx
+                return response.json()
+            except requests.exceptions.RequestException as e:
+                raise Exception(f"API Request Error: {str(e)}")
 
-        # Gunakan token untuk request berikutnya
-        api_url_iris = "http://172.24.52.4:7171/api/hariris/"
-        api_url_tampung = "http://172.24.52.4:7171/api/hrtampung/"
-        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        # Payload untuk request
         payload = {"kdcab": kdcab, "tanggal": tanggal}
 
         # Request ke API IRIS
         try:
-            response_iris = requests.post(api_url_iris, json=payload, headers=headers)
-            response_iris.raise_for_status()
-            datas_iris = response_iris.json()
+            datas_iris = api_request_with_token_retry("http://172.24.52.4:7171/api/hariris/", payload)
             rekap_data = datas_iris.get("rekapdata", [])
             list_data = datas_iris.get("listdata", [])
             list_data_belum = [item for item in list_data if item.get("proses") == "Belum Proses"]
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             return f"Error IRIS: {str(e)}", 500
 
         # Request ke API Tampung
         try:
-            response_tampung = requests.post(api_url_tampung, json=payload, headers=headers)
-            response_tampung.raise_for_status()
-            datas_tampung = response_tampung.json()
+            datas_tampung = api_request_with_token_retry("http://172.24.52.4:7171/api/hrtampung/", payload)
             rekap_cabang = datas_tampung.get("rekap_percabang", [])
             detail_belum = datas_tampung.get("detailbelum", [])
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             return f"Error Tampung: {str(e)}", 500
 
     # Render template
@@ -424,8 +414,6 @@ def hriris():
         rekap_cabang=rekap_cabang,
         detail_belum=detail_belum,
     )
-
-
 
 
 #Route buat login dan dapetin data
@@ -483,17 +471,16 @@ def result_iris():
                            rekap_cabang=rekap_cabang,
                            detail_belum=detail_belum)
 
-    
-# @app.route("/hrtampung/")
-# def hrtampung():
-#     content = "HR Tampung"
-#     return render_template("hrtampung.html", content=content)
-
 @app.route("/hrwrc/")
 def hrwrc():
     content = "HR WRC"
     return render_template("hrwrc.html", content=content)
 
+
+@app.route("/absidt/")
+def absidt():
+    content = "Absen IDT"
+    return render_template("absidt.html", content=content)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
